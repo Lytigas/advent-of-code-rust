@@ -1,7 +1,9 @@
 #[cfg(test)]
 mod solutions {
+    #[test]
     use super::*;
 
+    #[test]
     static TEST_CASE: &str = include_str!("input");
 
     #[test]
@@ -15,29 +17,32 @@ mod solutions {
     }
 }
 
-use std::collections::HashSet;
-use std::collections::HashMap;
-use std::collections::hash_map::Entry;
-use std::hash::Hasher;
-use std::hash::Hash;
 use std::cmp::Ordering;
+use std::collections::hash_map::Entry;
+use std::collections::HashMap;
+use std::collections::HashSet;
+use std::hash::Hash;
+use std::hash::Hasher;
 
 pub fn number_valid(input: &str) -> usize {
-    input.split('\n').filter(|line| {
-        let mut u: HashSet<&str> = HashSet::new();
-        for word in line.split_whitespace() {
-            if u.contains(word) {
-                return false;
+    input
+        .split('\n')
+        .filter(|line| {
+            let mut u: HashSet<&str> = HashSet::new();
+            for word in line.split_whitespace() {
+                if u.contains(word) {
+                    return false;
+                }
+                u.insert(word);
             }
-            u.insert(word);
-        }
-        true
-    }).count()
+            true
+        })
+        .count()
 }
 
 #[derive(PartialEq, Eq)]
 struct Wrapper {
-    map: HashMap<char, u32>
+    map: HashMap<char, u32>,
 }
 
 impl Wrapper {
@@ -47,8 +52,11 @@ impl Wrapper {
 }
 
 impl Hash for Wrapper {
-    fn hash<H>(&self, state: &mut H) where H: Hasher {
-        let mut v:Vec<(char, u32)> = self.map.iter().map(|x| (*x.0, *x.1)).collect();
+    fn hash<H>(&self, state: &mut H)
+    where
+        H: Hasher,
+    {
+        let mut v: Vec<(char, u32)> = self.map.iter().map(|x| (*x.0, *x.1)).collect();
         v.sort_unstable_by(|x, y| {
             if x.0 > y.0 {
                 Ordering::Greater
@@ -69,21 +77,25 @@ impl Hash for Wrapper {
 }
 
 pub fn number_valid_strict(input: &str) -> usize {
-    input.split('\n').filter(|line| {
+    input
+        .split('\n')
+        .filter(|line| {
+            let mut u: HashSet<Wrapper> = HashSet::new();
 
-        let mut u: HashSet<Wrapper> = HashSet::new();
+            for word in line.split_whitespace() {
+                let mut c = Wrapper {
+                    map: HashMap::new(),
+                };
+                for char in word.chars() {
+                    *c.entry(char).or_insert(0) += 1
+                }
 
-        for word in line.split_whitespace() {
-            let mut c = Wrapper {map: HashMap::new()};
-            for char in word.chars() {
-                *c.entry(char).or_insert(0) += 1
+                if u.contains(&c) {
+                    return false;
+                }
+                u.insert(c);
             }
-
-            if u.contains(&c) {
-                return false;
-            }
-            u.insert(c);
-        }
-        true
-    }).count()
+            true
+        })
+        .count()
 }

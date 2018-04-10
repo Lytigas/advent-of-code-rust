@@ -1,7 +1,9 @@
 #[cfg(test)]
 mod solutions {
+    #[test]
     use super::*;
 
+    #[test]
     static TEST_CASE: &str = include_str!("input");
 
     #[test]
@@ -17,12 +19,11 @@ mod solutions {
 
 use std::cmp;
 
-
 enum Direction {
     Up,
     Down,
     Left,
-    Right
+    Right,
 }
 
 use self::Direction::*;
@@ -30,18 +31,18 @@ use self::Direction::*;
 struct Step {
     step: u32,
     direction: Direction,
-    do_increment: bool
+    do_increment: bool,
 }
 
 impl Step {
     fn mutate(&mut self) {
-        self.step = self.step + (if self.do_increment {1} else {0});
+        self.step = self.step + (if self.do_increment { 1 } else { 0 });
         self.direction = match self.direction {
-                Up => Left,
-                Left => Down,
-                Down => Right,
-                Right => Up
-            };
+            Up => Left,
+            Left => Down,
+            Down => Right,
+            Right => Up,
+        };
         self.do_increment = !self.do_increment;
     }
 }
@@ -53,21 +54,21 @@ pub fn distance2(input: &str) -> u32 {
     let mut step = Step {
         step: 1,
         direction: Right,
-        do_increment: false
+        do_increment: false,
     };
 
     loop {
         // do step
         let step_this_time = cmp::min(step.step as i32, address - address_so_far);
         match step.direction {
-            Up => {current.1 += step_this_time},
-            Left => {current.0 -= step_this_time},
-            Down => {current.1 -= step_this_time},
-            Right => {current.0 += step_this_time}
+            Up => current.1 += step_this_time,
+            Left => current.0 -= step_this_time,
+            Down => current.1 -= step_this_time,
+            Right => current.0 += step_this_time,
         }
         address_so_far += step.step as i32;
         if address_so_far > address {
-            return (current.0.abs() + current.1.abs()) as u32
+            return (current.0.abs() + current.1.abs()) as u32;
         }
         step.mutate();
     }
@@ -92,11 +93,11 @@ pub fn first_allocate(input: &str) -> u32 {
                 current.0 += step_type.0;
                 current.1 += step_type.1;
                 let mut sum = 0;
-                for x in current.0-1 .. current.0+2 {
-                    for y in current.1-1 .. current.1+2 {
-                        sum += match memory.get(&(x,y)) {
+                for x in current.0 - 1..current.0 + 2 {
+                    for y in current.1 - 1..current.1 + 2 {
+                        sum += match memory.get(&(x, y)) {
                             Some(x) => *x,
-                            None => 0
+                            None => 0,
                         }
                     }
                 }
