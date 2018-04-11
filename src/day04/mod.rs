@@ -1,9 +1,9 @@
 #[cfg(test)]
 mod solutions {
-    #[test]
+    #[allow(unused_imports)]
     use super::*;
 
-    #[test]
+    #[allow(dead_code)]
     static TEST_CASE: &str = include_str!("input");
 
     #[test]
@@ -17,7 +17,6 @@ mod solutions {
     }
 }
 
-use std::cmp::Ordering;
 use std::collections::hash_map::Entry;
 use std::collections::HashMap;
 use std::collections::HashSet;
@@ -57,22 +56,8 @@ impl Hash for Wrapper {
         H: Hasher,
     {
         let mut v: Vec<(char, u32)> = self.map.iter().map(|x| (*x.0, *x.1)).collect();
-        v.sort_unstable_by(|x, y| {
-            if x.0 > y.0 {
-                Ordering::Greater
-            } else if x.0 < y.0 {
-                Ordering::Less
-            } else {
-                if x.1 > y.1 {
-                    Ordering::Greater
-                } else if x.1 < y.1 {
-                    Ordering::Less
-                } else {
-                    Ordering::Equal
-                }
-            }
-        });
-        v.hash(state)
+        v.sort_by_key(|x| x.0);
+        v.hash(state);
     }
 }
 

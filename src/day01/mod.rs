@@ -1,9 +1,9 @@
 #[cfg(test)]
 mod solutions {
-    #[test]
+    #[allow(unused_imports)]
     use super::*;
 
-    #[test]
+    #[allow(dead_code)]
     static TEST_CASE: &str = include_str!("input");
 
     #[test]
